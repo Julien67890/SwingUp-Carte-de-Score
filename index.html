@@ -241,6 +241,15 @@ thead .col-now{background:#dcecdf!important;color:var(--green-deep)!important}
 .rgrid .hn.now{background:var(--gl);color:#fff;border-radius:8px}
 .rgrid .rc.now{background:rgba(26,122,62,.1)}
 .rgrid .rt{padding:3px 0 3px 5px;border-bottom:none;font-size:.92em}
+.rgrid .rpar{color:#1a7a3e;font-weight:600;background:rgba(26,122,62,.06)}
+.rgrid .rn.rpar{padding-left:8px}
+.rgrid .rt.rpar b{background:#fffaea;color:#1a7a3e;border:1.5px solid #bfdcc6;box-shadow:inset 0 1px 0 #fff}
+.rbest{display:flex;align-items:center;gap:14px;margin:12px 4px 0;padding:10px 10px 10px 16px;border-radius:22px;background:linear-gradient(180deg,#fbf6e3,#efe6c8);border:1.5px solid rgba(255,255,255,.9);box-shadow:inset 0 2px 1px #fff,0 6px 14px -10px rgba(0,30,10,.6)}
+.rbest>svg{width:42px;height:42px;flex:0 0 auto;color:#0f3d22}
+.rbest .rbt{flex:1;min-width:0;line-height:1.15}
+.rbest .rbt small{display:block;font-family:var(--serif);font-size:1.05rem;font-weight:600;color:#0f3d22}
+.rbest .rbt b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-family:var(--serif);font-size:1.35rem;font-weight:700;color:#0f3d22;overflow:hidden;line-height:1.15}
+.rbest .rbs{flex:0 0 auto;min-width:96px;padding:6px 18px;border-radius:18px;text-align:center;background:var(--gl);box-shadow:var(--glsh);border:1.5px solid rgba(255,255,255,.5);color:#fff;font-family:var(--serif);font-weight:700;font-size:2.2rem;line-height:1.1}
 .rgrid .rt b{width:100%;height:100%;display:grid;place-items:center;border-radius:12px;background:var(--gl);box-shadow:var(--glsh);color:#fff;font-weight:600}
 @media(max-height:700px){.dial{width:120px}.gvalid{padding:12px}.quick button{padding:8px 2px}}
 .btn-valid{width:calc(100% - 32px);margin:12px 16px 0;border-radius:16px;padding:15px;font-size:1.05rem}
@@ -506,6 +515,14 @@ header{padding-top:calc(16px + env(safe-area-inset-top))}
 .brand h1,.auth-head h1{color:#fff;text-shadow:0 2px 3px rgba(0,30,60,.45),0 0 18px rgba(0,30,60,.25)}
 .brand p,.auth-head p{color:#fff;text-shadow:0 1px 3px rgba(0,30,60,.6);opacity:.95}
 .mark{box-shadow:0 8px 18px -6px rgba(0,30,10,.6),0 0 0 2px rgba(255,255,255,.7)}
+#setup>header .mark{width:72px;height:72px}
+#setup>header{display:grid;grid-template-columns:72px minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:12px;row-gap:6px;align-items:center}
+#setup>header .mark{grid-row:1/3}
+#setup>header .brand{grid-column:2;grid-row:1/3;min-width:0}
+#setup>header .acctbtn{grid-column:3;grid-row:1;margin-left:0;justify-self:end}
+#setup>header .betapill{grid-column:3;grid-row:2;justify-self:end;margin:0}
+#setup>header .brand h1{font-size:1.5rem;white-space:nowrap}
+#setup>header .brand p{text-transform:none;letter-spacing:0;font-size:1rem;font-weight:500;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .acctbtn{background:var(--crm);color:#0f3d22;border:1.5px solid rgba(255,255,255,.9);box-shadow:inset 0 2px 1px #fff,0 6px 14px -8px rgba(0,30,10,.6)}
 .acctbtn .av{background:var(--gl);box-shadow:var(--glsh);color:#fff}
 .topbar{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;position:relative}
@@ -718,6 +735,11 @@ tr.prow.act .hcol{background:#e9f4dc;box-shadow:inset 3px 0 0 #1a7a3e}
   <div class="recap9">
     <div class="rhead"><svg viewBox="0 0 24 24" fill="none"><path d="M7 4h10v5a5 5 0 0 1-10 0V4zM7 6H4v1.5A3.5 3.5 0 0 0 7.5 11M17 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5M12 14v4M8 21h8M9.5 18h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Récapitulatif des scores</span></div>
     <div class="rgrid" id="r9"></div>
+    <div class="rbest hidden" id="rBest">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M7 4h10v5a5 5 0 0 1-10 0V4zM7 6H4v1.5A3.5 3.5 0 0 0 7.5 11M17 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5M12 14v4M8 21h8M9.5 18h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="rbt"><small>Meilleur score</small><b id="rBestName"></b></div>
+      <div class="rbs" id="rBestScore"></div>
+    </div>
   </div>
 </section>
 
@@ -815,6 +837,8 @@ const $=s=>document.querySelector(s);
 const LANGS={
 
 en:{
+'Meilleur score':'Best score',
+'et':'and',
 'Score du trou':'Hole score',
 'Récapitulatif des scores':'Score summary',
 'Joueur':'Player',
@@ -1098,6 +1122,8 @@ en:{
 },
 
 es:{
+'Meilleur score':'Mejor resultado',
+'et':'y',
 'Score du trou':'Resultado del hoyo',
 'Récapitulatif des scores':'Resumen de resultados',
 'Joueur':'Jugador',
@@ -1381,6 +1407,8 @@ es:{
 },
 
 de:{
+'Meilleur score':'Bester Score',
+'et':'und',
 'Score du trou':'Loch-Score',
 'Récapitulatif des scores':'Score-Übersicht',
 'Joueur':'Spieler',
@@ -2252,6 +2280,9 @@ function renderRecap9(){
   let h='<div class="rh rn">'+esc(T('Joueur'))+'</div>';
   for(let i=from;i<to;i++)h+='<div class="rh hn'+(i===S.cur?' now':'')+'" data-h="'+i+'">'+(i+1)+'</div>';
   h+='<div class="rt"><b>'+esc(T('Total'))+'</b></div>';
+  h+='<div class="rn rpar">'+esc(T('Par'))+'</div>';
+  for(let i=from;i<to;i++)h+='<div class="rc rpar'+(i===S.cur?' now':'')+'">'+S.pars[i]+'</div>';
+  h+='<div class="rt rpar"><b>'+parTot()+'</b></div>';
   S.players.forEach((p,k)=>{
     h+='<div class="rn"><i style="--pc:'+COLORS[k%COLORS.length]+'"></i><span>'+esc(p.name||('J'+(k+1)))+'</span></div>';
     for(let i=from;i<to;i++){const v=p.scores[i];h+='<div class="rc'+(i===S.cur?' now':'')+'">'+(v===null?'':v)+'</div>';}
@@ -2259,6 +2290,16 @@ function renderRecap9(){
   });
   g.innerHTML=h;
   g.querySelectorAll('[data-h]').forEach(el=>el.onclick=()=>go(+el.dataset.h));
+  /* Meilleur score : plus petit écart au par sur les trous joués
+     (reste juste si un joueur a un trou de retard). */
+  const ps=S.players.filter(p=>p.scores.some(x=>x!==null));
+  $('#rBest').classList.toggle('hidden',!ps.length);
+  if(ps.length){
+    const best=Math.min(...ps.map(vsPar));
+    const win=ps.filter(p=>vsPar(p)===best);
+    $('#rBestName').textContent=win.map(p=>p.name).join(' '+T('et')+' ');
+    $('#rBestScore').textContent=played(win[0]);
+  }
 }
 
 const ICO={
@@ -2307,7 +2348,7 @@ function advance(){
     let waiting=-1;
     for(let k=1;k<=n;k++){const j=(S.active+k)%n;if(S.players[j].scores[S.cur]===null){waiting=j;break;}}
     if(waiting>=0){setActive(waiting);return;}
-    if(S.cur<S.holes-1){S.active=0;go(S.cur+1);toast(T('Trou {n}',{n:S.cur+1}));}
+    if(S.cur<S.holes-1){S.active=0;go(S.cur+1);}
     else{S.active=0;renderAll();toast(T('Parcours terminé'));}
   },260);
 }
